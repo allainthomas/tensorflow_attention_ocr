@@ -40,13 +40,13 @@ def logits_to_log_prob(logits):
   with tf.variable_scope('log_probabilities'):
     reduction_indices = len(logits.shape.as_list()) - 1
     max_logits = tf.reduce_max(
-        logits, reduction_indices=reduction_indices, keep_dims=True)
+        logits, reduction_indices=reduction_indices, keepdims=True)
     safe_logits = tf.subtract(logits, max_logits)
     sum_exp = tf.reduce_sum(
         tf.exp(safe_logits),
         reduction_indices=reduction_indices,
-        keep_dims=True)
-    log_probs = tf.subtract(safe_logits, tf.log(sum_exp))
+        keepdims=True)
+    log_probs = tf.subtract(safe_logits, tf.math.log(sum_exp))
   return log_probs
 
 

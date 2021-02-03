@@ -129,7 +129,7 @@ def preprocess_image(image, augment=False, central_crop_size=None,
     A float32 tensor of shape [H x W x 3] with RGB values in the required
     range.
   """
-  with tf.variable_scope('PreprocessImage'):
+  with tf.compat.v1.variable_scope('PreprocessImage'):
     image = tf.image.convert_image_dtype(image, dtype=tf.float32)
     if augment or central_crop_size:
       if num_towers == 1:

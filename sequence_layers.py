@@ -203,7 +203,7 @@ class SequenceLayerBase(object):
       A tensor with shape [batch_size, num_char_classes]
     """
     if char_index not in self._char_logits:
-      self._char_logits[char_index] = tf.nn.xw_plus_b(inputs, self._softmax_w,
+      self._char_logits[char_index] = tf.compat.v1.nn.xw_plus_b(inputs, self._softmax_w,
                                                       self._softmax_b)
     return self._char_logits[char_index]
 
@@ -248,6 +248,7 @@ class SequenceLayerBase(object):
       first_label = self.get_input(prev=None, i=0)
       decoder_inputs = [first_label] + [None] * (self._params.seq_length - 1)
       lstm_cell = tf.contrib.rnn.LSTMCell(
+      #lstm_cell = tf.keras.layers.LSTMCell(
           self._mparams.num_lstm_units,
           use_peepholes=False,
           cell_clip=self._mparams.lstm_state_clip_value,

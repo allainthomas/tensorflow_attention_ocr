@@ -200,7 +200,7 @@ class Model(object):
     logging.debug('Using final_endpoint=%s', mparams.final_endpoint)
     with tf.variable_scope('conv_tower_fn/INCE'):
       if reuse:
-        tf.get_variable_scope().reuse_variables()
+        tf.compat.v1.get_variable_scope().reuse_variables()
       with slim.arg_scope(inception.inception_v3_arg_scope()):
         with slim.arg_scope([slim.batch_norm, slim.dropout],
                             is_training=is_training):
@@ -301,7 +301,7 @@ class Model(object):
           with shape [batch_size x seq_length].
     """
     log_prob = utils.logits_to_log_prob(chars_logit)
-    ids = tf.to_int32(tf.argmax(log_prob, axis=2), name='predicted_chars')
+    ids = tf.cast(tf.argmax(log_prob, axis=2), dtype=tf.int32, name='predicted_chars')
     mask = tf.cast(
       slim.one_hot_encoding(ids, self._params.num_char_classes), tf.bool)
     all_scores = tf.nn.softmax(chars_logit)
@@ -353,7 +353,7 @@ class Model(object):
     """
     logging.debug('images: %s', images)
     is_training = labels_one_hot is not None
-    with tf.variable_scope(scope, reuse=reuse):
+    with tf.compat.v1.variable_scope(scope, reuse=reuse):
       views = tf.split(
         value=images, num_or_size_splits=self._params.num_views, axis=2)
       logging.debug('Views=%d single view: %s', len(views), views[0])
