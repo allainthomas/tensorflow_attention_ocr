@@ -48,7 +48,7 @@ def load_images(file_pattern, batch_size, dataset_name):
   for i in range(batch_size):
     path = file_pattern % i
     print("Reading %s" % path)
-    pil_image = PIL.Image.open(tf.gfile.GFile(path))
+    pil_image = PIL.Image.open(tf.io.gfile.GFile(path, 'rb'))
     images_actual_data[i, ...] = np.asarray(pil_image)
   return images_actual_data
 
@@ -62,7 +62,7 @@ def create_model(batch_size, dataset_name):
     num_views=dataset.num_of_views,
     null_code=dataset.null_code,
     charset=dataset.charset)
-  raw_images = tf.placeholder(tf.uint8, shape=[batch_size, height, width, 3])
+  raw_images = tf.compat.v1.placeholder(tf.uint8, shape=[batch_size, height, width, 3])
   images = tf.map_fn(data_provider.preprocess_image, raw_images,
                      dtype=tf.float32)
   endpoints = model.create_base(images, labels_one_hot=None)
