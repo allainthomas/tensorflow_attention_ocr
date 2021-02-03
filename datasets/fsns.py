@@ -72,14 +72,14 @@ def read_charset(filename, null_character=u'\u2591'):
   """
   pattern = re.compile(r'(\d+)\t(.+)')
   charset = {}
-  with tf.gfile.GFile(filename) as f:
+  with tf.io.gfile.GFile(filename) as f:
     for i, line in enumerate(f):
       m = pattern.match(line)
       if m is None:
         logging.warning('incorrect charset file. line #%d: %s', i, line)
         continue
       code = int(m.group(1))
-      char = m.group(2).decode('utf-8')
+      char = m.group(2)
       if char == '<nul>':
         char = null_character
       charset[code] = char
@@ -133,19 +133,19 @@ def get_split(split_name, dataset_dir=None, config=None):
   zero = tf.zeros([1], dtype=tf.int64)
   keys_to_features = {
       'image/encoded':
-      tf.FixedLenFeature((), tf.string, default_value=''),
+      tf.io.FixedLenFeature((), tf.string, default_value=''),
       'image/format':
-      tf.FixedLenFeature((), tf.string, default_value='png'),
+      tf.io.FixedLenFeature((), tf.string, default_value='png'),
       'image/width':
-      tf.FixedLenFeature([1], tf.int64, default_value=zero),
+      tf.io.FixedLenFeature([1], tf.int64, default_value=zero),
       'image/orig_width':
-      tf.FixedLenFeature([1], tf.int64, default_value=zero),
+      tf.io.FixedLenFeature([1], tf.int64, default_value=zero),
       'image/class':
-      tf.FixedLenFeature([config['max_sequence_length']], tf.int64),
+      tf.io.FixedLenFeature([config['max_sequence_length']], tf.int64),
       'image/unpadded_class':
-      tf.VarLenFeature(tf.int64),
+      tf.io.VarLenFeature(tf.int64),
       'image/text':
-      tf.FixedLenFeature([1], tf.string, default_value=''),
+      tf.io.FixedLenFeature([1], tf.string, default_value=''),
   }
   items_to_handlers = {
       'image':
